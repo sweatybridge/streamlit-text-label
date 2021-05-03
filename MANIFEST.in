@@ -1,1 +1,1 @@
-recursive-include component/frontend/build *
+recursive-include streamlit_text_label/frontend/build *

@@ -1,7 +1,7 @@
 import lorem
 import streamlit as st
 
-from component import tooltip_select
+from streamlit_text_label import tooltip_select
 
 
 @st.cache

@@ -7,24 +7,15 @@ import {
   withStreamlitConnection,
 } from "streamlit-component-lib"
 
-const modifiers = {
-  flip: { enabled: false },
-  preventOverflow: { enabled: false },
-  hide: { enabled: false },
-}
-
 interface State {
   selectedText?: string
   selectedIndex?: number
-  isOpen: boolean
 }
 
 class TooltipSelect extends StreamlitComponentBase<State> {
   constructor(props: ComponentProps) {
     super(props)
-    this.state = {
-      isOpen: false,
-    }
+    this.state = {}
   }
 
   public render = (): ReactNode => {
