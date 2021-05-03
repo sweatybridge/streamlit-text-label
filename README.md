@@ -15,6 +15,8 @@ from streamlit_text_label import tooltip_select
 selected_text, selected_label = tooltip_select(body="lorem ipsum", labels=["Noun", "Verb"])
 ```
 
+More details in [example](example/app.py) directory.
+
 ## Develop
 
 ```bash
@@ -33,7 +35,7 @@ Followed by the example app
 
 ```bash
 pip install -r example/requirements.txt
-streamlit run example/app.py
+RELEASE=DEV streamlit run example/app.py
 ```
 
 ## Publish
@@ -41,5 +43,6 @@ streamlit run example/app.py
 ```bash
 cd component/frontend
 npm run build
-RELEASE=PROD python setup.py sdist bdist_wheel
+cd ../..
+python setup.py sdist bdist_wheel
 ```

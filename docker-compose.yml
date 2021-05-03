@@ -7,8 +7,8 @@ services:
       dockerfile: example/Dockerfile
     ports:
       - 8501:8501
-    # environment:
-    #   RELEASE: PROD
+    environment:
+      RELEASE: DEV
     volumes:
       - ./example/app.py:/app/app.py
 
