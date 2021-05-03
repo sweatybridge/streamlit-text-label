@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: example/Dockerfile
+    ports:
+      - 8501:8501
+    # environment:
+    #   RELEASE: PROD
+    volumes:
+      - ./example/app.py:/app/app.py
+
+  frontend:
+    build: streamlit_text_label/frontend
+    ports:
+      - 3001:3001
+    volumes:
+      - ./streamlit_text_label/frontend/.env:/frontend/.env
+      - ./streamlit_text_label/frontend/public:/frontend/public
+      - ./streamlit_text_label/frontend/src:/frontend/src

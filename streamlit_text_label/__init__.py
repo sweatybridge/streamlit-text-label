@@ -73,9 +73,7 @@ def tooltip_select(body, labels, key=None):
     #
     # "default" is a special argument that specifies the initial return
     # value of the component before the user has interacted with it.
-    component_value = _component_func(
-        body=body, labels=labels, key=key, default=None
-    )
+    component_value = _component_func(body=body, labels=labels, key=key, default=None)
 
     # We could modify the value returned from the component if we wanted.
     # There's no need to do this in our simple example - but it's an option.

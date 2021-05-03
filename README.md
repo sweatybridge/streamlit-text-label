@@ -1,7 +1,7 @@
 # streamlit-text-label
 
 Custom streamlit component for labelling text selections.
-[screenshot](assets/screenshot.png)
+![Screenshot](assets/screenshot.png)
 
 ## Usage
 
@@ -18,7 +18,22 @@ selected_text, selected_label = tooltip_select(body="lorem ipsum", labels=["Noun
 ## Develop
 
 ```bash
-docker-compose up
+docker-compose up --build
+```
+
+Or manually, start the frontend
+
+```bash
+cd streamlit_text_label/frontend
+npm install
+npm run start
+```
+
+Followed by the example app
+
+```bash
+pip install -r example/requirements.txt
+streamlit run example/app.py
 ```
 
 ## Publish
