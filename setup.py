@@ -10,7 +10,7 @@ setuptools.setup(
     author_email="developers@basis-ai.com",
     description="Components for labelling text document",
     long_description=long_description,
-    long_description_content_type="text/plain",
+    long_description_content_type="text/markdown",
     url="https://github.com/basisai/streamlit-text-label",
     packages=setuptools.find_packages(),
     include_package_data=True,
