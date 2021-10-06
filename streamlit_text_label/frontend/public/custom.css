@@ -1,0 +1,9 @@
+/* Fixes streamlit narrow layout being handled as mobile */
+.ls-editor {
+  width: unset !important;
+}
+
+/* Hides task id: n header */
+.ls-task-info {
+  display: none;
+}

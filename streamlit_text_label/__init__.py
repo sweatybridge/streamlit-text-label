@@ -1,4 +1,8 @@
 import os
+from dataclasses import asdict, dataclass
+from hashlib import md5
+from typing import Any, List, Mapping, Optional
+
 import streamlit.components.v1 as components
 
 # Create a _RELEASE constant. We'll set this to False while we're developing
@@ -20,10 +24,8 @@ _RELEASE = os.getenv("RELEASE", "").upper() != "DEV"
 
 if not _RELEASE:
     _component_func = components.declare_component(
-        # We give the component a simple, descriptive name ("tooltip_select"
-        # does not fit this bill, so please choose something better for your
-        # own component :)
-        "tooltip_select",
+        # We give the component a simple, descriptive name
+        "label_select",
         # Pass `url` here to tell Streamlit that the component will be served
         # by the local dev server that you run via `npm run start`.
         # (This is useful while your component is in development.)
@@ -35,7 +37,66 @@ else:
     # build directory:
     parent_dir = os.path.dirname(os.path.abspath(__file__))
     build_dir = os.path.join(parent_dir, "frontend/build")
-    _component_func = components.declare_component("tooltip_select", path=build_dir)
+    _component_func = components.declare_component("label_select", path=build_dir)
+
+
+# Constants used in defining xml config
+FROM_NAME = "label"
+TO_NAME = "text"
+BODY_VALUE = "body"
+
+
+@dataclass(frozen=True)
+class Selection:
+    start: int
+    end: int
+    text: str
+    labels: List[str]
+
+    def to_ls(self) -> Mapping[str, Any]:
+        return {
+            "from_name": FROM_NAME,
+            "to_name": TO_NAME,
+            "type": "labels",
+            "value": asdict(self),
+        }
+
+
+def _make_rgb(key: str) -> str:
+    k = key.encode()
+    hash = md5(k).hexdigest()
+    return hash[:6]
+
+
+def _make_xml(labels: List[str]) -> str:
+    tags = []
+    tags.append("<View>")
+    tags.append(f'<Labels name="{FROM_NAME}" toName="{TO_NAME}">')
+    tags.extend(f'<Label value="{v}" background="#{_make_rgb(v)}"/>' for v in labels)
+    tags.append("</Labels>")
+    tags.append(f'<Text name="{TO_NAME}" value="${BODY_VALUE}"/>')
+    tags.append("</View>")
+    return "\n".join(tags)
+
+
+def _make_task(body: str, values: List[Selection]) -> Mapping[str, Any]:
+    return {
+        "id": 1,
+        "data": {BODY_VALUE: body},
+        "annotations": [{"result": [v.to_ls() for v in values]}],
+    }
+
+
+def _get_selections(annotation: Mapping[str, Any]) -> List[Selection]:
+    return [
+        Selection(
+            start=v["start"],
+            end=v["end"],
+            text=v["text"],
+            labels=v["results"][0]["value"]["labels"],
+        )
+        for v in annotation["areas"].values()
+    ]
 
 
 # Create a wrapper function for the component. This is an optional
@@ -43,38 +104,31 @@ else:
 # `declare_component` and call it done. The wrapper allows us to customize
 # our component's API: we can pre-process its input args, post-process its
 # output value, and add a docstring for users.
-def tooltip_select(body, labels, key=None):
-    """Create a new instance of "tooltip_select".
-
-    Parameters
-    ----------
-    likes: int
-        Initial number of likes
-    dislikes: int
-        Initial number of dislikes
-    value: int
-        -1 means dislike, 0 means not set, 1 means like
-    key: str or None
-        An optional key that uniquely identifies this component. If this is
-        None, and the component's arguments are changed, the component will
-        be re-mounted in the Streamlit frontend and lose its current state.
-
-    Returns
-    -------
-    int
-        Updated user preference (-1, 0, or 1).
-        (This is the value passed to `Streamlit.setComponentValue` on the
-        frontend.)
-
+def label_select(
+    body: str,
+    labels: List[str],
+    selections: Optional[List[Selection]] = None,
+    interfaces: Optional[List[str]] = None,
+) -> List[Selection]:
     """
-    # Call through to our private component function. Arguments we pass here
-    # will be sent to the frontend, where they'll be available in an "args"
-    # dictionary.
-    #
-    # "default" is a special argument that specifies the initial return
-    # value of the component before the user has interacted with it.
-    component_value = _component_func(body=body, labels=labels, key=key, default=None)
+    Creates a new instance of `label_select` component using Label Studio.
 
-    # We could modify the value returned from the component if we wanted.
-    # There's no need to do this in our simple example - but it's an option.
-    return component_value
+    :param body: The text body to display
+    :type body: str
+    :param labels: A list of available labels
+    :type labels: List[str]
+    :param selections: The initial selections, defaults to None
+    :type selections: Optional[List[Selection]], optional
+    :param interfaces: UI components to display, defaults to ["controls", "update"]
+    :type interfaces: Optional[List[str]], optional
+    :return: A list of all selections
+    :rtype: List[Selection]
+    """
+    if interfaces is None:
+        interfaces = ["controls", "update"]
+    config = _make_xml(labels)
+    task = _make_task(body, selections or [])
+    # Arguments passed here will be sent to the frontend as "args" dictionary.
+    annotation = _component_func(config=config, interfaces=interfaces, task=task)
+    # Modify the value returned so that it can be used as default selections.
+    return _get_selections(annotation) if annotation else None
