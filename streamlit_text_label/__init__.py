@@ -29,7 +29,7 @@ if not _RELEASE:
         # Pass `url` here to tell Streamlit that the component will be served
         # by the local dev server that you run via `npm run start`.
         # (This is useful while your component is in development.)
-        url="http://localhost:3001",
+        url="http://localhost:3000",
     )
 else:
     # When we're distributing a production version of the component, we'll
@@ -131,4 +131,4 @@ def label_select(
     # Arguments passed here will be sent to the frontend as "args" dictionary.
     annotation = _component_func(config=config, interfaces=interfaces, task=task)
     # Modify the value returned so that it can be used as default selections.
-    return _get_selections(annotation) if annotation else None
+    return _get_selections(annotation) if annotation else []

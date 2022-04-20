@@ -15,7 +15,7 @@ services:
   frontend:
     build: streamlit_text_label/frontend
     ports:
-      - 3001:3001
+      - 3000:3000
     volumes:
       - ./streamlit_text_label/frontend/.env:/frontend/.env
       - ./streamlit_text_label/frontend/public:/frontend/public
