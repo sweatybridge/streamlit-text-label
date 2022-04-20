@@ -2,7 +2,7 @@ import { Streamlit, RenderData } from "streamlit-component-lib"
 import LabelStudio from "label-studio"
 import "label-studio/build/static/css/main.css"
 
-let ls
+let ls: any
 
 /**
  * The component's render function. This will be called immediately after
@@ -23,17 +23,17 @@ function onRender(event: Event): void {
     interfaces,
     task,
 
-    onLabelStudioLoad: function (_ls) {
+    onLabelStudioLoad: function (_ls: any) {
       console.debug("loaded")
     },
 
-    onSubmitAnnotation: function (_ls, annotation) {
+    onSubmitAnnotation: function (_ls: any, annotation: Record<string, any>) {
       console.debug("submitted")
       annotation = JSON.parse(JSON.stringify(annotation))
       Streamlit.setComponentValue(annotation)
     },
 
-    onUpdateAnnotation: (_ls, annotation) => {
+    onUpdateAnnotation: (_ls: any, annotation: Record<string, any>) => {
       console.debug("updated")
       annotation = JSON.parse(JSON.stringify(annotation))
       Streamlit.setComponentValue(annotation)
@@ -44,7 +44,7 @@ function onRender(event: Event): void {
       Streamlit.setFrameHeight()
     },
 
-    onDeleteAnnotation: function (_ls, annotation) {
+    onDeleteAnnotation: function (_ls: any, annotation: Record<string, any>) {
       console.debug("deleted")
       annotation = JSON.parse(JSON.stringify(annotation))
       Streamlit.setComponentValue(annotation)
