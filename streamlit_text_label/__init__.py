@@ -74,9 +74,9 @@ def _make_xml(labels: List[str]) -> str:
     tags.append(f'<Labels name="{FROM_NAME}" toName="{TO_NAME}">')
     tags.extend(f'<Label value="{v}" background="#{_make_rgb(v)}"/>' for v in labels)
     tags.append("</Labels>")
-    tags.append(f'<div style="overflow-y: scroll;">')
+    tags.append(f'<View style="overflow-y: scroll; height: 300px;">')
     tags.append(f'<Text name="{TO_NAME}" value="${BODY_VALUE}"/>')
-    tags.append(f'</div>')
+    tags.append(f'</View>')
     tags.append("</View>")
     return "\n".join(tags)
 
