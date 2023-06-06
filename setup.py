@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as f:
 
 setuptools.setup(
     name="streamlit_text_label",
-    version="0.1.1",
+    version="0.1.2",
     author="Han Qiao",
     author_email="sweatybridge@gmail.com",
     description="Components for labelling text document",
