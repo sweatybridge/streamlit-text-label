@@ -68,13 +68,17 @@ def _make_rgb(key: str) -> str:
     return hash[:6]
 
 
-def _make_xml(labels: List[str]) -> str:
+def _make_xml(labels: List[str], height: Optional[int] = None) -> str:
     tags = []
     tags.append("<View>")
     tags.append(f'<Labels name="{FROM_NAME}" toName="{TO_NAME}">')
     tags.extend(f'<Label value="{v}" background="#{_make_rgb(v)}"/>' for v in labels)
     tags.append("</Labels>")
+    if height is not None:
+        tags.append(f'<View style="overflow-y: scroll; height: {height}px;">')
     tags.append(f'<Text name="{TO_NAME}" value="${BODY_VALUE}"/>')
+    if height is not None:
+        tags.append(f'</View>')
     tags.append("</View>")
     return "\n".join(tags)
 
@@ -109,6 +113,7 @@ def label_select(
     labels: List[str],
     selections: Optional[List[Selection]] = None,
     interfaces: Optional[List[str]] = None,
+    height: Optional[int] = None,
 ) -> List[Selection]:
     """
     Creates a new instance of `label_select` component using Label Studio.
@@ -121,12 +126,14 @@ def label_select(
     :type selections: Optional[List[Selection]], optional
     :param interfaces: UI components to display, defaults to ["controls", "update"]
     :type interfaces: Optional[List[str]], optional
+    :param height: The height of the component, defaults to None
+    :type height: int, optional
     :return: A list of all selections
     :rtype: List[Selection]
     """
     if interfaces is None:
         interfaces = ["controls", "update"]
-    config = _make_xml(labels)
+    config = _make_xml(labels, height)
     task = _make_task(body, selections or [])
     # Arguments passed here will be sent to the frontend as "args" dictionary.
     annotation = _component_func(config=config, interfaces=interfaces, task=task)
